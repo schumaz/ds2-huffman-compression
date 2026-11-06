@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ArvoreBinaria.h" //inclui os Prot tipos
+#include "ArvoreBinaria.h" //inclui os Prototipos
 
 struct NO{
 	int info;
@@ -27,7 +27,7 @@ void libera_NO(struct NO* no){
 void libera_ArvBin(ArvBin* raiz){
 	if(raiz == NULL)
 		return;
-	libera_NO(*raiz); // libera cada n 
+	libera_NO(*raiz); // libera cada n
 	free(raiz); // libera a raiz
 }
 
