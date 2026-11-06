@@ -4,6 +4,6 @@
 #define Tamanho_tabela 256
 
 int calcular_frequencia(char *caminho, int frequencias[Tamanho_tabela]);
-void impimir_frequencia(int freuqencias[Tamanho_tabela]);
+void imprimir_frequencia(int frequencias[Tamanho_tabela]);
 
 #endif
