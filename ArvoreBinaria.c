@@ -2,11 +2,27 @@
 #include <stdlib.h>
 #include "ArvoreBinaria.h" //inclui os Prototipos
 
+// Estrutura de no modificada, para conter um caractere e sua respectiva frequencia (necessario para Huffman)
 struct NO{
-	int info;
+	unsigned char caractere;
+	int frequencia;
 	struct NO *esq;
 	struct NO *dir;
 };
+
+// Funcao de inserir na arvore, modificada para inserir um no e ambos dados (necessarios para Huffman)
+struct NO* insere_no_arvore(unsigned char caractere, int frequencia, struct NO *esq, struct NO *dir) {
+    struct NO *novo = (struct NO*) malloc(sizeof(struct NO));
+
+    if (novo != NULL) {
+        novo->caractere = caractere;
+        novo->frequencia = frequencia;
+        novo->esq = esq;
+        novo->dir = dir;
+    }
+
+    return novo;
+}
 
 ArvBin* cria_ArvBin(){
 	ArvBin* raiz = (ArvBin*) malloc(sizeof(ArvBin));
@@ -62,145 +78,13 @@ int altura_ArvBin(ArvBin *raiz){
 		return(alt_dir + 1);
 }
 
-int insere_ArvBin(ArvBin* raiz, int valor){
-	if(raiz == NULL)
-		return 0;
-	struct NO* novo;
-	novo = (struct NO*) malloc(sizeof(struct NO));
-	if(novo == NULL)
-		return 0;
-	novo->info = valor;
-	novo->dir = NULL;
-	novo->esq = NULL;
-
-	if(*raiz == NULL)
-		*raiz = novo;
-	else{
-		struct NO* atual = *raiz;
-		struct NO* ant = NULL;
-
-		// Navega nos n s da  rvore at  chegar em um n  folha
-		while(atual != NULL){
-			ant = atual;
-			if(valor == atual->info){
-				free(novo);
-				return 0; // elemento j  existe
-			}
-
-			if(valor > atual->info)
-				atual = atual->dir;
-			else
-				atual = atual->esq;
-		}
-
-		// Insere como filho desse n  folha
-		if(valor > ant->info)
-			ant->dir = novo;
-		else
-			ant->esq = novo;
-	}
-	return 1;
-}
-
-int consulta_ArvBin(ArvBin *raiz, int valor){
-	if (raiz == NULL)
-		return 0;
-	struct NO* atual = *raiz;
-	while (atual != NULL){
-		if (valor == atual->info){
-			return 1;
-		}
-		if (valor > atual->info)
-			atual = atual->dir;
-		else
-			atual = atual->esq;
-	}
-	return 0;
-}
-
-struct NO* remove_atual(struct NO* atual) {
-	struct NO *no1, *no2;
-
-	// Sem filho da esquerda. Apontar para o filho da direita (trata n  folha e n  com 1 filho).
-	if (atual->esq == NULL){
-		no2 = atual->dir;
-		free(atual);
-		return no2;
-	}
-
-	// Procura filho mais   direita na sub- rvore da esquerda.
-	no1 = atual;
-	no2 = atual->esq;
-	while (no2->dir != NULL){
-		no1 = no2;
-		no2 = no2->dir;
-	}
-
-	// Copia o filho mais   direita na sub- rvore da esquerda para o lugar do n  removido.
-	if (no1 != atual){
-		no1->dir = no2->esq;
-		no2->esq = atual->esq;
-	}
-	no2->dir = atual->dir;
-
-	free(atual);
-	return no2;
-}
-// http://www.ime.usp.br/~pf/algoritmos/aulas/binst.html
-int remove_ArvBin(ArvBin *raiz, int valor){
-	if (raiz == NULL)
-		return 0;
-	struct NO* ant = NULL;
-	struct NO* atual = *raiz;
-	while (atual != NULL){
-        //Achou o n  a ser removido. Tratar o tipo de remo  o.
-		if (valor == atual->info){
-			if (atual == *raiz)
-				*raiz = remove_atual(atual);
-			else{
-				if (ant->dir == atual)
-					ant->dir = remove_atual(atual);
-				else
-					ant->esq = remove_atual(atual);
-			}
-			return 1;
-		}
-		// Continua buscando na  rvore n  a ser removido
-		ant = atual;
-		if (valor > atual->info)
-			atual = atual->dir;
-		else
-			atual = atual->esq;
-	}
-	return 0;
-}
-
+// Funcao de preOrdem modificada para exibir frequencia ao inves de um inteiro qualquer
 void preOrdem_ArvBin(ArvBin *raiz){
 	if(raiz == NULL)
 		return;
 	if(*raiz != NULL){
-		printf("%d\n",(*raiz)->info);
+		printf("%d\n",(*raiz)->frequencia);
 		preOrdem_ArvBin(&((*raiz)->esq));
 		preOrdem_ArvBin(&((*raiz)->dir));
-	}
-}
-
-void emOrdem_ArvBin(ArvBin *raiz){
-	if(raiz == NULL)
-		return;
-	if(*raiz != NULL){
-		emOrdem_ArvBin(&((*raiz)->esq));
-		printf("%d\n",(*raiz)->info);
-		emOrdem_ArvBin(&((*raiz)->dir));
-	}
-}
-
-void posOrdem_ArvBin(ArvBin *raiz){
-	if(raiz == NULL)
-		return;
-	if(*raiz != NULL){
-		posOrdem_ArvBin(&((*raiz)->esq));
-		posOrdem_ArvBin(&((*raiz)->dir));
-		printf("%d\n",(*raiz)->info);
 	}
 }
