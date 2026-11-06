@@ -30,7 +30,7 @@ void imprimir_frequencia(int *frequencias) {
                 if (i >= 32 && i <= 126) {
                     printf("Caractere: '%c' | ASCII %d: %d ocorrencias.\n", i, i, frequencias[i]);
                 } else {
-                    printf("Caractere byte: %d (nao visivel): %d ocorrencias.\n", i, frequencias[i]);
+                    printf("Caractere byte: %d (ASCII nao visivel): %d ocorrencias.\n", i, frequencias[i]);
                 }
             }
         }
