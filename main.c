@@ -1,42 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ArvoreBinaria.h"
+#include "Leitor.h"
 
-int main(){
-	int N = 8, dados[8] = {50,100,30,20,40,45,35,37};
+int main() {
+    int frequencias[Tamanho_tabela];
+    char *caminho = "romeo_juliet_repetido_128x.txt";
 
-	ArvBin* raiz = cria_ArvBin();
-	//ArvBin* raiz;
-
-	if (estaVazia_ArvBin(raiz))
-		printf("A arvore binaria esta vazia\n");
-
-	printf("A arvore possui %d nos\n", totalNO_ArvBin(raiz));
-
-	printf("A arvore tem altura %d\n", altura_ArvBin(raiz));
-
-	int i;
-	for(i=0; i < N; i++)
-		insere_ArvBin(raiz,dados[i]);
-
-    if (consulta_ArvBin(raiz, 20))
-        printf("20 esta na arvore\n");
-    else
-        printf("20 não esta na arvore\n");
-
-    if (remove_ArvBin(raiz, 20)) {
-        printf("20 foi excluido\n");
-    } else {
-        printf("20 não esta na arvore\n");
+    if (calcular_frequencia(caminho, frequencias) == 0) {
+        printf("Erro ao abrir o arquivo: %s\n", caminho);
+        return 1;
     }
 
-	printf("A arvore possui %d nos\n", totalNO_ArvBin(raiz));
+    imprimir_frequencia(frequencias);
 
-	printf("A arvore tem altura %d\n", altura_ArvBin(raiz));
-
-	altura_ArvBin(raiz);
-
-	libera_ArvBin(raiz);
-
-	return 0;
+    return 0;
 }
