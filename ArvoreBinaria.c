@@ -90,6 +90,10 @@ void preOrdem_ArvBin(ArvBin *raiz){
 	}
 }
 
+//============================================================================================
+//===================================== Funções próprias =====================================
+//============================================================================================
+
 void inserir_ordenado(struct NO** lista, struct NO* novo_no) {
 	// Caso 1: Lista vazia ou novo nó tem a menor frequência (inserção no início)
 	if(*lista==NULL || (*lista)->frequencia >= novo_no->frequencia) {
@@ -149,4 +153,35 @@ void print_lista_ordenada(struct NO* lista) {
         
         atual = atual->prox; // Avança para o próximo nó
     }
+}
+
+struct NO* construir_arvore_huffman(struct NO* lista) {
+
+    if (lista == NULL) return NULL;
+
+    while (lista->prox != NULL) {
+        // 1. Remove os dois primeiros nós (os de menor frequência);
+        struct NO* esquerdo = lista;
+        struct NO* direito = lista->prox;
+
+        // Avança a cabeça da lista para o terceiro elemento;
+        lista = direito->prox;
+
+        // Limpa os ponteiros 'prox' dos nós removidos;
+        esquerdo->prox = NULL;
+        direito->prox = NULL;
+
+        // 2. Cria o novo nó interno (pai)
+        struct NO* pai = (struct NO*) malloc(sizeof(struct NO));
+        pai->caractere = '+'; 
+        pai->frequencia = esquerdo->frequencia + direito->frequencia;
+        pai->esq = esquerdo;
+        pai->dir = direito;
+        pai->prox = NULL;
+
+        // 3. Reinserir o nó pai na lista encadeada, mantendo a ordem;
+        inserir_ordenado(&lista, pai);
+    }
+
+    return lista;
 }

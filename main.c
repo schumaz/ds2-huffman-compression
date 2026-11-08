@@ -16,7 +16,11 @@ int main() {
 
     //Lista ordenada dos elementos do texto selecionado, de acordo com sua frequência;
     struct NO* lista_ordenada = preencher_lista_ordenada(frequencias);
-    print_lista_ordenada(lista_ordenada);
+    //print_lista_ordenada(lista_ordenada);
+
+    //Criamos a ArvBin
+    struct NO* raiz_huffman = construir_arvore_huffman(lista_ordenada);
+    print_lista_ordenada(raiz_huffman);
 
     return 0;
 }
