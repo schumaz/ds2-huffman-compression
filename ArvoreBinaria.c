@@ -8,6 +8,7 @@ struct NO{
 	int frequencia;
 	struct NO *esq;
 	struct NO *dir;
+	struct NO *prox;
 };
 
 // Funcao de inserir na arvore, modificada para inserir um no e ambos dados (necessarios para Huffman)
@@ -87,4 +88,65 @@ void preOrdem_ArvBin(ArvBin *raiz){
 		preOrdem_ArvBin(&((*raiz)->esq));
 		preOrdem_ArvBin(&((*raiz)->dir));
 	}
+}
+
+void inserir_ordenado(struct NO** lista, struct NO* novo_no) {
+	// Caso 1: Lista vazia ou novo nó tem a menor frequência (inserção no início)
+	if(*lista==NULL || (*lista)->frequencia >= novo_no->frequencia) {
+		novo_no->prox = *lista;
+        *lista = novo_no;
+	} else {
+// Casos 2 e 3: Percorre a lista até achar a posição correta (meio ou final)
+        struct NO* atual = *lista;
+        
+        // Avança enquanto o próximo nó não for nulo E a frequência do próximo for menor que a do novo
+        while (atual->prox != NULL && atual->prox->frequencia < novo_no->frequencia) {
+            atual = atual->prox;
+        }
+        
+        // Encaixa o novo nó na posição encontrada
+        novo_no->prox = atual->prox;
+        atual->prox = novo_no;
+	}
+}
+
+struct NO* preencher_lista_ordenada(int *frequencias) {
+
+	struct NO* lista = NULL; 
+    
+    for (int i = 0; i < Tamanho_tabela; i++) {
+        if (frequencias[i] > 0) {
+            struct NO *novo_no = (struct NO*) malloc(sizeof(struct NO));
+            novo_no->caractere = (unsigned char) i;
+            novo_no->frequencia = frequencias[i];
+            novo_no->esq = NULL;
+            novo_no->dir = NULL;
+            novo_no->prox = NULL;
+            
+            inserir_ordenado(&lista, novo_no);
+        }
+    }
+    return lista;
+}
+
+void print_lista_ordenada(struct NO* lista) {
+    if (lista == NULL) {
+        printf("Lista vazia!\n");
+        return;
+    }
+    
+    struct NO* atual = lista;
+    
+    // Percorre a lista saltando de nó em nó pelo ponteiro 'prox'
+    while (atual != NULL) {
+        if (atual->caractere >= 32 && atual->caractere <= 126) {
+            printf("Caractere: '%c' | ASCII %d: %d ocorrencias.\n", 
+                   atual->caractere, atual->caractere, atual->frequencia);
+        } else {
+            printf("Caractere byte: %d (ASCII nao visivel): %d ocorrencias.\n", 
+                   atual->caractere, atual->frequencia);
+        }
+        
+        atual = atual->prox; // Avança para o próximo nó
+    }
 }
