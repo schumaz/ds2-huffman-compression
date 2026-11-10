@@ -20,6 +20,7 @@ struct NO* insere_no_arvore(unsigned char caractere, int frequencia, struct NO *
         novo->frequencia = frequencia;
         novo->esq = esq;
         novo->dir = dir;
+        novo->prox = NULL;
     }
 
     return novo;
@@ -121,6 +122,11 @@ struct NO* preencher_lista_ordenada(int *frequencias) {
     for (int i = 0; i < Tamanho_tabela; i++) {
         if (frequencias[i] > 0) {
             struct NO *novo_no = (struct NO*) malloc(sizeof(struct NO));
+
+            if (novo_no == NULL) {
+                return lista;
+            }
+
             novo_no->caractere = (unsigned char) i;
             novo_no->frequencia = frequencias[i];
             novo_no->esq = NULL;
@@ -173,6 +179,9 @@ struct NO* construir_arvore_huffman(struct NO* lista) {
 
         // 2. Cria o novo nó interno (pai)
         struct NO* pai = (struct NO*) malloc(sizeof(struct NO));
+        if (pai == NULL) {
+             return NULL;
+        }       
         pai->caractere = '+'; 
         pai->frequencia = esquerdo->frequencia + direito->frequencia;
         pai->esq = esquerdo;
@@ -184,4 +193,29 @@ struct NO* construir_arvore_huffman(struct NO* lista) {
     }
 
     return lista;
+}
+
+// Funções criadas para navegar pela arvore
+int obter_caractere(ArvBin no) {
+    return no->caractere;
+}
+
+ArvBin obter_esquerda(ArvBin no) {
+    return no->esq;
+}
+
+ArvBin obter_direita(ArvBin no) {
+    return no->dir;
+}
+
+int eh_folha(ArvBin no) {
+    if (no->esq == NULL && no->dir == NULL) {
+        return 1;
+    }
+
+    return 0;
+}
+
+int obter_frequencia(ArvBin no) {
+    return no->frequencia;
 }

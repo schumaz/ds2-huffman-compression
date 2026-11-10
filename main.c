@@ -2,25 +2,45 @@
 #include <stdlib.h>
 #include "ArvoreBinaria.h"
 #include "Leitor.h"
+#include "Huffman.h"
 
-int main() {
+int main()
+{
     int frequencias[Tamanho_tabela];
-    char *caminho = "bomessebombom.txt";
+    char *caminho = "textoteste.txt";
 
-    if (calcular_frequencia(caminho, frequencias) == 0) {
+    if (calcular_frequencia(caminho, frequencias) == 0)
+    {
         printf("Erro ao abrir o arquivo: %s\n", caminho);
         return 1;
     }
 
-    //imprimir_frequencia(frequencias);
+    // imprimir_frequencia(frequencias);
 
-    //Lista ordenada dos elementos do texto selecionado, de acordo com sua frequência;
-    struct NO* lista_ordenada = preencher_lista_ordenada(frequencias);
-    //print_lista_ordenada(lista_ordenada);
+    // Lista ordenada dos elementos do texto selecionado, de acordo com sua frequência;
+    struct NO *lista_ordenada = preencher_lista_ordenada(frequencias);
+    // print_lista_ordenada(lista_ordenada);
 
-    //Criamos a ArvBin
-    struct NO* raiz_huffman = construir_arvore_huffman(lista_ordenada);
-    print_lista_ordenada(raiz_huffman);
+    // Criamos a ArvBin
+    ArvBin raiz_huffman = construir_arvore_huffman(lista_ordenada);
+    preOrdem_ArvBin(&raiz_huffman);
 
+    char codigos[Tamanho_tabela][Tamanho_tabela];
+    char codigo[Tamanho_tabela];
+
+    for (int i = 0; i < Tamanho_tabela; i++)
+    {
+        codigos[i][0] = '\0';
+    }
+
+    
+
+    gerar_codigos(raiz_huffman, codigo, 0);
+
+    armazenar_codigos(raiz_huffman, codigo, 0, codigos);
+
+    printf("teste se armazenou s: %s\n", codigos[115]);
+    printf("teste se armazenou e: %s\n", codigos[101]);
+    printf("teste se armazenou espaco: %s\n", codigos[32]);
     return 0;
 }

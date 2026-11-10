@@ -18,4 +18,10 @@ struct NO* preencher_lista_ordenada(int *frequencias);
 void print_lista_ordenada(struct NO* lista);
 struct NO* construir_arvore_huffman(struct NO* lista);
 
+int obter_caractere(ArvBin no);
+ArvBin obter_esquerda(ArvBin no);
+ArvBin obter_direita(ArvBin no);
+int eh_folha(ArvBin no);
+int obter_frequencia(ArvBin no);// Só usei para verificar se estava codifivando huffman certo
+
 #endif
