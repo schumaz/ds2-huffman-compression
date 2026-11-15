@@ -55,3 +55,49 @@ void armazenar_codigos(ArvBin raiz, char *codigo, int nivel, char codigos[Tamanh
 
     armazenar_codigos(obter_direita(raiz), codigo, nivel + 1, codigos);
 }
+
+int comprimir_arquivo(const char *caminho_entrada, const char *caminho_saida, char codigos[Tamanho_tabela][Tamanho_tabela])
+{
+    FILE *entrada = fopen(caminho_entrada, "rb");
+    if (entrada == NULL) {
+        return 0;
+    }
+
+    FILE *saida = fopen(caminho_saida, "wb");
+    if (saida == NULL) {
+        fclose(entrada);
+        return 0;
+    }
+
+    unsigned char buffer_byte = 0;
+    int contador_bits = 0;
+    int c;
+
+    while ((c = fgetc(entrada)) != EOF){
+        unsigned char caractere = (unsigned char)c;
+        char *codigo_atual = codigos[caractere];
+
+        for (int i = 0; codigo_atual[i] != '\0'; i++){
+            buffer_byte = buffer_byte << 1;
+
+            if (codigo_atual[i] == '1'){
+                buffer_byte = buffer_byte | 1;
+            }
+            contador_bits++;
+            if (contador_bits == 8){
+                fwrite(&buffer_byte, sizeof(unsigned char), 1, saida);
+                buffer_byte = 0;
+                contador_bits = 0;
+            }
+        }
+    }
+    
+    if (contador_bits > 0){
+        buffer_byte = buffer_byte << (8 - contador_bits);
+        fwrite(&buffer_byte, sizeof(unsigned char), 1, saida);
+    }
+
+    fclose(entrada);
+    fclose(saida);
+    return 1;
+}
