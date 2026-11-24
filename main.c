@@ -4,18 +4,11 @@
 #include "Leitor.h"
 #include "Huffman.h"
 
-int main(int argc, char *argv[]) {
+int main() {
     int frequencias[Tamanho_tabela];
-    const char *caminho = "textoteste.txt";
+    const char *caminho = "casmurro.txt";
+    // const char *caminho = "romeo_juliet_repetido_128x.txt";
     const char *caminho_saida = "comprimido.bin";
-
-    // Permite passar o arquivo de entrada e saida pela linha de comando se quiser
-    if (argc >= 2) {
-        caminho = argv[1];
-    }
-    if (argc >= 3) {
-        caminho_saida = argv[2];
-    }
 
     // Conta a frequencia de cada caractere do arquivo de entrada
     int status_leitura = calcular_frequencia(caminho, frequencias);
