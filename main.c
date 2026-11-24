@@ -4,48 +4,56 @@
 #include "Leitor.h"
 #include "Huffman.h"
 
-int main()
-{
+int main(int argc, char *argv[]) {
     int frequencias[Tamanho_tabela];
-    char *caminho = "textoteste.txt";
-    char *caminho_saida = "comprimido.bin";
+    const char *caminho = "textoteste.txt";
+    const char *caminho_saida = "comprimido.bin";
 
-    if (calcular_frequencia(caminho, frequencias) == 0)
-    {
+    // Permite passar o arquivo de entrada e saida pela linha de comando se quiser
+    if (argc >= 2) {
+        caminho = argv[1];
+    }
+    if (argc >= 3) {
+        caminho_saida = argv[2];
+    }
+
+    // Conta a frequencia de cada caractere do arquivo de entrada
+    int status_leitura = calcular_frequencia(caminho, frequencias);
+    if (status_leitura == -1) {
         printf("Erro ao abrir o arquivo: %s\n", caminho);
         return 1;
     }
+    if (status_leitura == 0) {
+        printf("O arquivo %s esta vazio, nao ha nada para comprimir.\n", caminho);
+        return 0;
+    }
 
-    // imprimir_frequencia(frequencias);
+    // Lista ordenada dos elementos do texto selecionado, de acordo com sua frequencia
+    ArvBin lista_ordenada = preencher_lista_ordenada(frequencias);
+    if (estaVazia_ArvBin(lista_ordenada)) {
+        printf("Erro ao alocar memoria para a lista ordenada.\n");
+        return 1;
+    }
 
-    // Lista ordenada dos elementos do texto selecionado, de acordo com sua frequência;
-    struct NO *lista_ordenada = preencher_lista_ordenada(frequencias);
-    // print_lista_ordenada(lista_ordenada);
-
-    // Criamos a ArvBin
+    // Criamos a arvore de Huffman a partir da lista ordenada
     ArvBin raiz_huffman = construir_arvore_huffman(lista_ordenada);
-    preOrdem_ArvBin(&raiz_huffman);
+    if (estaVazia_ArvBin(raiz_huffman)) {
+        printf("Erro ao construir a arvore de Huffman.\n");
+        return 1;
+    }
 
+    // Gera a tabela de codigos binarios e mostra na tela
     char codigos[Tamanho_tabela][Tamanho_tabela];
-    char codigo[Tamanho_tabela];
+    gerar_tabela_codigos(raiz_huffman, codigos);
+    imprimir_codigos(frequencias, codigos);
 
-    for (int i = 0; i < Tamanho_tabela; i++)
-    {
-        codigos[i][0] = '\0';
-    }
-
-    gerar_codigos(raiz_huffman, codigo, 0);
-    armazenar_codigos(raiz_huffman, codigo, 0, codigos);
-
-    printf("Teste se armazenou s: %s\n", codigos[115]);
-    printf("Teste se armazenou e: %s\n", codigos[101]);
-    printf("Teste se armazenou espaco: %s\n", codigos[32]);
-
-    if (comprimir_arquivo(caminho, caminho_saida, codigos)){
+    // Faz a compressao gravando os bits no arquivo binario de saida
+    if (comprimir_arquivo(caminho, caminho_saida, codigos)) {
         printf("\nArquivo comprimido gerado com sucesso: %s\n", caminho_saida);
-    }
-    else{
+    } else {
         printf("\nErro ao gerar o arquivo comprimido.\n");
+        libera_ArvBin(&raiz_huffman);
+        return 1;
     }
 
     libera_ArvBin(&raiz_huffman);

@@ -3,3 +3,6 @@
 
 # .txt files for testing
 *.txt
+
+# Compressed binary files
+*.bin
